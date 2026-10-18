@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yuri Eastwood</title>
+<meta name="description" content="Yuri Eastwood, Managing Delivery Architect in Chicago. Software architecture, cloud, DevOps and agentic development in enterprise delivery.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column laid over a faint blueprint grid; the work is framed as architecture decision records. */
+:root {
+  --paper: #eef1f4;
+  --sheet: #f8fafb;
+  --ink: #14202b;
+  --muted: #566573;
+  --line: #cfd7df;
+  --grid: rgba(36, 72, 201, 0.06);
+  --accent: #2448c9;
+  --accent-soft: rgba(36, 72, 201, 0.09);
+  --ok: #1d7a4f;
+  --ok-soft: rgba(29, 122, 79, 0.12);
+  --todo: #9a5b00;
+  --todo-soft: rgba(154, 91, 0, 0.10);
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d131a; --sheet: #131b24; --ink: #dfe6ed; --muted: #93a1af; --line: #26323f;
+    --grid: rgba(124, 155, 255, 0.06); --accent: #86a2ff; --accent-soft: rgba(134, 162, 255, 0.12);
+    --ok: #5fcf98; --ok-soft: rgba(95, 207, 152, 0.12); --todo: #f0b35a; --todo-soft: rgba(240, 179, 90, 0.12);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d131a; --sheet: #131b24; --ink: #dfe6ed; --muted: #93a1af; --line: #26323f;
+  --grid: rgba(124, 155, 255, 0.06); --accent: #86a2ff; --accent-soft: rgba(134, 162, 255, 0.12);
+  --ok: #5fcf98; --ok-soft: rgba(95, 207, 152, 0.12); --todo: #f0b35a; --todo-soft: rgba(240, 179, 90, 0.12);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font: 400 1rem/1.65 var(--body);
+  margin: 0;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Top bar */
+.bar { padding-block: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.mark { display: flex; align-items: center; gap: 10px; font: 600 0.95rem var(--display); color: var(--ink); text-decoration: none; }
+.mono-badge { width: 34px; height: 34px; display: grid; place-items: center; border: 1.5px solid var(--ink); font: 500 0.78rem var(--mono); letter-spacing: 0.04em; }
+.nav { display: flex; gap: 20px; flex-wrap: wrap; font: 500 0.82rem var(--mono); }
+.nav a { color: var(--muted); text-decoration: none; }
+.nav a:hover { color: var(--accent); }
+
+/* Hero */
+.hero { padding-block: 56px 72px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+.eyebrow { font: 500 0.78rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+h1 { font: 800 clamp(2.9rem, 8vw, 5.6rem)/0.95 var(--display); letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+.thesis { font: 400 clamp(1.15rem, 2.2vw, 1.4rem)/1.5 var(--body); color: var(--ink); max-width: 34ch; margin: 28px 0 0; text-wrap: pretty; }
+.thesis em { font-style: normal; background: linear-gradient(transparent 62%, var(--accent-soft) 62%); }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1.5px solid var(--ink); color: var(--ink); text-decoration: none; font: 500 0.88rem var(--body); background: var(--sheet); transition: transform .15s ease, background .15s ease; }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 var(--accent); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+
+/* Title block, like the corner of an architecture drawing */
+.titleblock { border: 1.5px solid var(--ink); background: var(--sheet); font: 400 0.8rem/1.4 var(--mono); }
+.titleblock div { display: grid; grid-template-columns: 9.5em 1fr; border-top: 1px solid var(--line); }
+.titleblock div:first-child { border-top: 0; }
+.titleblock dt, .titleblock dd { margin: 0; padding: 9px 12px; }
+.titleblock dt { color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.7rem; border-right: 1px solid var(--line); }
+.titleblock dd { color: var(--ink); min-width: 0; }
+
+/* Sections */
+section { padding-block: 64px; border-top: 1.5px solid var(--ink); }
+.sec-head { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 32px; margin-bottom: 36px; }
+.sec-head .label { font: 500 0.78rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 8px; }
+h2 { font: 600 clamp(1.7rem, 3.6vw, 2.4rem)/1.1 var(--display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.sec-head p { color: var(--muted); max-width: 60ch; margin: 12px 0 0; }
+.sec-body { margin-left: calc(12rem + 32px); }
+
+/* Now / learning / open to */
+.now { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1.5px solid var(--ink); background: var(--sheet); }
+.now > div { padding: 22px; border-left: 1px solid var(--line); min-width: 0; }
+.now > div:first-child { border-left: 0; }
+.now h3 { font: 500 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+.now p { margin: 0; }
+
+/* Capabilities */
+.caps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; }
+.cap h3 { font: 600 1.1rem var(--display); margin: 0 0 8px; }
+.cap p { margin: 0 0 12px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.tags li { font: 400 0.76rem var(--mono); padding: 3px 8px; border: 1px solid var(--line); background: var(--sheet); }
+
+/* ADRs */
+.adrs { display: grid; gap: 16px; }
+.adr { background: var(--sheet); border: 1px solid var(--line); padding: 22px 24px; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 4px 20px; }
+.adr .id { font: 500 0.85rem var(--mono); color: var(--accent); grid-row: span 3; }
+.adr h3 { font: 600 1.15rem/1.3 var(--display); margin: 0; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.status { font: 500 0.66rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok); background: var(--ok-soft); padding: 2px 7px; }
+.adr dl { margin: 6px 0 0; display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 4px 12px; }
+.adr dt { font: 500 0.72rem/1.9 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.adr dd { margin: 0; }
+
+/* Experience */
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 1.5px solid var(--ink); }
+.timeline > li { position: relative; padding: 0 0 32px 28px; }
+.timeline > li::before { content: ""; position: absolute; left: -6px; top: 8px; width: 9px; height: 9px; background: var(--paper); border: 1.5px solid var(--ink); }
+.timeline > li:last-child { padding-bottom: 0; }
+.when { font: 400 0.8rem var(--mono); color: var(--muted); }
+.timeline h3 { font: 600 1.1rem var(--display); margin: 2px 0 4px; }
+.timeline p { margin: 0; max-width: 62ch; }
+.roles { list-style: none; margin: 8px 0 0; padding: 0; max-width: 34rem; }
+.roles li { display: flex; justify-content: space-between; gap: 16px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+.roles li:first-child { font-weight: 600; }
+.roles .yrs { font: 400 0.8rem/1.9 var(--mono); color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Credentials */
+.creds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.creds > div { min-width: 0; }
+.creds h3 { font: 500 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+.creds h3:not(:first-child) { margin-top: 24px; }
+.creds ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.creds li { padding-left: 14px; position: relative; }
+.creds li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 1.5px; background: var(--ink); }
+
+/* Repos */
+.repos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.repo { display: flex; flex-direction: column; gap: 8px; background: var(--sheet); border: 1px solid var(--line); padding: 20px; color: var(--ink); text-decoration: none; min-width: 0; transition: border-color .15s ease; }
+.repo:hover { border-color: var(--accent); }
+.repo .name { font: 500 0.88rem var(--mono); color: var(--accent); overflow-wrap: anywhere; }
+.repo p { margin: 0; color: var(--muted); font-size: 0.92rem; flex: 1; }
+.repo .meta { font: 400 0.75rem var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #68217a; margin-right: 5px; vertical-align: 0; }
+
+/* Contact */
+.contact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1.5px solid var(--ink); background: var(--sheet); }
+.contact-grid a { display: flex; flex-direction: column; gap: 2px; padding: 20px 22px; text-decoration: none; color: var(--ink); border-left: 1px solid var(--line); border-top: 1px solid var(--line); margin: -1px 0 0 -1px; min-width: 0; }
+.contact-grid a:hover { background: var(--accent-soft); }
+.contact-grid .k { font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.contact-grid .v { font: 500 0.98rem var(--body); overflow-wrap: anywhere; }
+
+/* Placeholder marker: delete the class once real content is in */
+.todo { color: var(--todo); background: var(--todo-soft); border-bottom: 1px dashed var(--todo); padding: 0 3px; }
+
+footer { border-top: 1.5px solid var(--ink); padding-block: 28px 40px; font: 400 0.8rem var(--mono); color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 32px 56px; }
+  .sec-head { grid-template-columns: 1fr; gap: 8px; }
+  .sec-head .label { padding-top: 0; }
+  .sec-body { margin-left: 0; }
+  .now, .repos, .contact-grid { grid-template-columns: 1fr; }
+  .now > div { border-left: 0; border-top: 1px solid var(--line); }
+  .now > div:first-child { border-top: 0; }
+  .caps, .creds { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .adr { grid-template-columns: 1fr; }
+  .adr .id { grid-row: auto; }
+  .adr dl { grid-template-columns: 1fr; gap: 0; }
+  .adr dd { margin-bottom: 8px; }
+  .nav { gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <a class="mark" href="#top" aria-label="Yuri Eastwood, home"><span class="mono-badge">YE</span>Yuri Eastwood</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#expertise">Expertise</a>
+      <a href="#principles">Principles</a>
+      <a href="#experience">Experience</a>
+      <a href="#credentials">Credentials</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Managing Delivery Architect · Capgemini · Chicago</p>
+        <h1>Yuri<br>Eastwood</h1>
+        <p class="thesis">I design scalable systems that make complex problems simple, then stay with the teams that ship them. Fifteen years of <em>bridging architecture and delivery</em>, now applied to agentic software development.</p>
+        <div class="links">
+          <a class="btn primary" href="https://www.linkedin.com/in/yurieastwood" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            LinkedIn</a>
+          <a class="btn" href="https://github.com/yurieastwood" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3"/></svg>
+            GitHub</a>
+          <a class="btn" href="https://stackoverflow.com/users/3212472" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.99 21.9v-6.4h2.13V24H2.03v-8.5h2.12v6.4h14.84zM6.6 15.13l10.43 2.19.44-2.1-10.43-2.18-.44 2.09zm1.38-5 9.65 4.5.9-1.94-9.65-4.5-.9 1.94zm2.67-4.74 8.18 6.81 1.36-1.63-8.18-6.82-1.36 1.64zM15.93.36l-1.7 1.27 6.35 8.55 1.7-1.27L15.93.36zM6.37 19.78H17v-2.12H6.37v2.12z"/></svg>
+            Stack Overflow</a>
+          <a class="btn" href="https://medium.com/@yurieastwood" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+            Medium</a>
+        </div>
+      </div>
+
+      <dl class="titleblock" aria-label="Profile summary">
+        <div><dt>Role</dt><dd>Managing Delivery Architect</dd></div>
+        <div><dt>Organization</dt><dd>Capgemini</dd></div>
+        <div><dt>Experience</dt><dd>15+ years</dd></div>
+        <div><dt>Practice</dt><dd>Architecture · Cloud · DevOps</dd></div>
+        <div><dt>Focus</dt><dd>Agentic, spec-driven delivery</dd></div>
+        <div><dt>Based in</dt><dd>Chicago, IL, USA</dd></div>
+      </dl>
+    </div>
+
+    <section aria-labelledby="now-h">
+      <div class="sec-head">
+        <div class="label">Right now</div>
+        <div><h2 id="now-h">Where my attention is</h2></div>
+      </div>
+      <div class="sec-body">
+        <div class="now">
+          <div><h3>Building</h3><p>Guardrails and patterns for agentic development in enterprise software delivery.</p></div>
+          <div><h3>Studying</h3><p>How AI-assisted engineering workflows change the way teams plan, review and ship.</p></div>
+          <div><h3>Open to</h3><p>Collaborating on open-source tooling for delivery, developer experience and agentic frameworks.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise" aria-labelledby="exp-h">
+      <div class="sec-head">
+        <div class="label">Expertise</div>
+        <div>
+          <h2 id="exp-h">Empowering teams through scalable design and clean code</h2>
+          <p>The architecture only counts once it runs, and it only drives business outcomes when teams can own it. I work across the whole path, so the design and the delivery plan are the same document.</p>
+        </div>
+      </div>
+      <div class="sec-body caps">
+        <div class="cap">
+          <h3>Solution architecture</h3>
+          <p>Domain-centred designs that keep business rules independent of frameworks and infrastructure.</p>
+          <ul class="tags"><li>Enterprise architecture</li><li>Clean Architecture</li><li>DDD</li><li>Microservices</li><li>Event-driven</li><li>C4 model</li></ul>
+        </div>
+        <div class="cap">
+          <h3>Software engineering</h3>
+          <p>Hands-on with the code, not only the diagrams, in whatever language the system calls for. Reviewing pull requests is part of the architect's job.</p>
+          <ul class="tags"><li>API design</li><li>Polyglot</li><li>Test automation</li><li>Code review</li><li>.NET</li></ul>
+        </div>
+        <div class="cap">
+          <h3>Cloud</h3>
+          <p>Platform choices weighed on cost, operability and how much the team can realistically run.</p>
+          <ul class="tags"><li>Cloud-native</li><li>Containers &amp; Kubernetes</li><li>Serverless</li><li>Messaging</li><li>Infrastructure as code</li><li>Azure</li></ul>
+        </div>
+        <div class="cap">
+          <h3>Delivery &amp; DevOps</h3>
+          <p>Release trains, pipelines and the agreements that let several teams ship one product.</p>
+          <ul class="tags"><li>SAFe</li><li>Stakeholder management</li><li>CI/CD</li><li>Platform engineering</li><li>Observability</li><li>AI coding agents</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="principles" aria-labelledby="pr-h">
+      <div class="sec-head">
+        <div class="label">Principles</div>
+        <div>
+          <h2 id="pr-h">Decisions I keep making</h2>
+          <p>Written the way I'd record them for a team: as architecture decision records.</p>
+        </div>
+      </div>
+      <div class="sec-body adrs">
+        <article class="adr">
+          <div class="id">ADR-001</div>
+          <h3>The architect stays through delivery <span class="status">Accepted</span></h3>
+          <dl>
+            <dt>Context</dt><dd>Designs handed over at kickoff drift from what gets built within a few sprints.</dd>
+            <dt>Decision</dt><dd>Own the architecture through release: in planning, in code review, in the incident channel.</dd>
+          </dl>
+        </article>
+        <article class="adr">
+          <div class="id">ADR-002</div>
+          <h3>Write the spec before the code, and before the prompt <span class="status">Accepted</span></h3>
+          <dl>
+            <dt>Context</dt><dd>AI agents produce code faster than teams can agree on what it should do.</dd>
+            <dt>Decision</dt><dd>Spec-driven engineering: a reviewed, testable specification is the input for both people and agents.</dd>
+          </dl>
+        </article>
+        <article class="adr">
+          <div class="id">ADR-003</div>
+          <h3>Agents get guardrails, not blank cheques <span class="status">Accepted</span></h3>
+          <dl>
+            <dt>Context</dt><dd>Enterprise codebases carry compliance, security and long-lived conventions.</dd>
+            <dt>Decision</dt><dd>Give agentic tooling explicit boundaries, review gates and patterns, so speed doesn't cost trust.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" aria-labelledby="xp-h">
+      <div class="sec-head">
+        <div class="label">Experience</div>
+        <div>
+          <h2 id="xp-h">From intern to managing architect</h2>
+          <p>Banking, mortgage lending and global consulting, across Brazil and the United States.</p>
+        </div>
+      </div>
+      <div class="sec-body">
+        <ol class="timeline">
+          <li>
+            <div class="when">Feb 2018 – present · Brazil, then United States</div>
+            <h3>Capgemini</h3>
+            <ul class="roles">
+              <li><span>Managing Delivery Architect</span><span class="yrs">2025 – now</span></li>
+              <li><span>Delivery Architect</span><span class="yrs">2023 – 2025</span></li>
+              <li><span>Solutions Architect</span><span class="yrs">2020 – 2022</span></li>
+              <li><span>IT Specialist</span><span class="yrs">2019 – 2020</span></li>
+              <li><span>System Analyst</span><span class="yrs">2018 – 2019</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="when">May 2015 – Feb 2018 · Osasco, Brazil</div>
+            <h3>Bradesco</h3>
+            <ul class="roles">
+              <li><span>Software Engineer</span><span class="yrs">2015 – 2018</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="when">Apr 2010 – May 2015 · Santos, Brazil</div>
+            <h3>Família Paulista Crédito Imobiliário</h3>
+            <ul class="roles">
+              <li><span>Systems Development Analyst</span><span class="yrs">2011 – 2015</span></li>
+              <li><span>IT Intern</span><span class="yrs">2010 – 2011</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="when">Oct 2008 – Jan 2010 · São Paulo, Brazil</div>
+            <h3>FIAP</h3>
+            <ul class="roles">
+              <li><span>IT Intern</span><span class="yrs">2008 – 2010</span></li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="credentials" aria-labelledby="cr-h">
+      <div class="sec-head">
+        <div class="label">Credentials</div>
+        <div><h2 id="cr-h">Certified, and still studying</h2></div>
+      </div>
+      <div class="sec-body creds">
+        <div>
+          <h3>Certifications</h3>
+          <ul>
+            <li>Microsoft Certified: DevOps Engineer Expert</li>
+            <li>Microsoft Certified: Azure Developer Associate</li>
+            <li>Microsoft Certified: Security, Compliance, and Identity Fundamentals</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Leadership</h3>
+          <ul><li>People Manager Excellence</li></ul>
+          <h3>Education</h3>
+          <ul>
+            <li>Systems Analysis and Development, Fatec Baixada Santista</li>
+            <li>Computer Engineering studies, FIAP</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Languages</h3>
+          <ul>
+            <li>English, native or bilingual</li>
+            <li>Portuguese, native or bilingual</li>
+            <li>Spanish, elementary</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" aria-labelledby="work-h">
+      <div class="sec-head">
+        <div class="label">Open source</div>
+        <div>
+          <h2 id="work-h">Code in public</h2>
+          <p>Side projects I build end to end, from domain model to deployment, across different stacks.</p>
+        </div>
+      </div>
+      <div class="sec-body repos">
+        <a class="repo" href="https://github.com/yurieastwood/em2devs-apps-group-apartment-hunt" target="_blank" rel="noopener">
+          <span class="name">group-apartment-hunt</span>
+          <p>A shared apartment search for families. Imports listings by URL, then adds schools, commute times and a Chicago crime-based safety score so everyone can comment and rank together.</p>
+          <span class="meta"><span>Next.js · Postgres · Google Maps</span><span>158 commits</span></span>
+        </a>
+        <a class="repo" href="https://github.com/yurieastwood/em2devs-apps-todo" target="_blank" rel="noopener">
+          <span class="name">Waypoint</span>
+          <p>Task management as an RPG: quests, XP, skill trees and guilds. Clean Architecture with CQRS, real-time updates and orchestration through .NET Aspire.</p>
+          <span class="meta"><span>.NET 9 · SvelteKit · Redis</span><span>100 commits</span></span>
+        </a>
+        <a class="repo" href="https://github.com/yurieastwood/em2devs-apps-building-management" target="_blank" rel="noopener">
+          <span class="name">building-management</span>
+          <p>Multi-tenant SaaS for property administrators: units, residents, visits and incidents, built with privacy compliance in mind and mutation-tested with Stryker.</p>
+          <span class="meta"><span>.NET 10 · Docker</span><span>76 commits</span></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="writing" aria-labelledby="wr-h">
+      <div class="sec-head">
+        <div class="label">Writing</div>
+        <div>
+          <h2 id="wr-h">Notes from the field</h2>
+          <p>Articles on architecture, engineering and delivery, published where the conversation is happening.</p>
+        </div>
+      </div>
+      <div class="sec-body repos">
+        <a class="repo" href="https://www.linkedin.com/in/yurieastwood/recent-activity/articles/" target="_blank" rel="noopener">
+          <span class="name">LinkedIn articles</span>
+          <p>Long-form pieces on architecture, delivery and leading engineering teams.</p>
+          <span class="meta"><span>linkedin.com/in/yurieastwood</span></span>
+        </a>
+        <a class="repo" href="https://dev.to/yurieastwood" target="_blank" rel="noopener">
+          <span class="name">DEV Community</span>
+          <p>Developer-focused posts. Latest: <cite>C# 9.0 Perks</cite>.</p>
+          <span class="meta"><span>dev.to/yurieastwood</span></span>
+        </a>
+        <a class="repo" href="https://medium.com/@yurieastwood" target="_blank" rel="noopener">
+          <span class="name">Medium</span>
+          <p>New writing on agentic development and spec-driven engineering.</p>
+          <span class="meta"><span>medium.com/@yurieastwood</span></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="ct-h">
+      <div class="sec-head">
+        <div class="label">Contact</div>
+        <div>
+          <h2 id="ct-h">Ask me about architecture, cloud, delivery or agentic development</h2>
+          <p>Happy to talk through a design, a delivery problem or a collaboration.</p>
+        </div>
+      </div>
+      <div class="sec-body contact-grid">
+        <a href="https://www.linkedin.com/in/yurieastwood" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">in/yurieastwood</span></a>
+        <a href="https://github.com/yurieastwood" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">@yurieastwood</span></a>
+        <a href="https://stackoverflow.com/users/3212472" target="_blank" rel="noopener"><span class="k">Stack Overflow</span><span class="v">users/3212472</span></a>
+        <a href="https://medium.com/@yurieastwood" target="_blank" rel="noopener"><span class="k">Medium</span><span class="v">@yurieastwood</span></a>
+        <a href="https://x.com/yurieastwood" target="_blank" rel="noopener"><span class="k">X</span><span class="v">@yurieastwood</span></a>
+        <a href="https://dev.to/yurieastwood" target="_blank" rel="noopener"><span class="k">DEV Community</span><span class="v">@yurieastwood</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Yuri Eastwood</span>
+    <span>Static HTML · hosted on GitHub Pages</span>
+  </footer>
+</div>
+</body>
+</html>
