@@ -1,15 +1,23 @@
 # yurieastwood.github.io
 
-Personal portfolio site. Plain HTML and CSS, no build step.
+Source for **[yurieastwood.github.io](https://yurieastwood.github.io)**, the personal site of Yuri Eastwood, Managing Delivery Architect at Capgemini.
 
-- `index.html` is the deployable page (GitHub Pages serves it from the repo root).
-- `src/page.html` is the same content without the `<html>/<head>` wrapper, used for the Claude preview.
+It covers my experience, the principles I work by, open-source projects and writing on software architecture, delivery and agentic development.
 
-## Fill in before publishing
-Search `index.html` for `class="todo"`. Each one marks a detail to replace (employer, dates, roles, talks/certifications). Remove the `todo` class once the text is real.
+## Built with
 
-## Deploy to GitHub Pages
-1. Create a public repo named `yurieastwood.github.io`.
-2. Commit `index.html` (and this README) to `main`.
-3. Settings → Pages → Source: "Deploy from a branch", branch `main`, folder `/ (root)`.
-4. The site goes live at https://yurieastwood.github.io. A custom domain can be added in the same settings page.
+- Plain HTML and CSS in a single `index.html`, with no framework or build step
+- Light and dark themes that follow your system setting
+- Hosted on GitHub Pages, which deploys every push to `main`
+
+## Run locally
+
+Open `index.html` in a browser, or serve the folder:
+
+```sh
+python3 -m http.server 8000
+```
+
+## Find me
+
+[LinkedIn](https://www.linkedin.com/in/yurieastwood) · [GitHub](https://github.com/yurieastwood) · [DEV](https://dev.to/yurieastwood) · [Medium](https://medium.com/@yurieastwood) · [Stack Overflow](https://stackoverflow.com/users/3212472)
